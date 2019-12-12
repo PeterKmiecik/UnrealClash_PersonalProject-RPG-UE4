@@ -575,7 +575,6 @@ void AMain::Jump()
 	if (MovementStatus != EMovementStatus::EMS_Dead)
 	{
 		Super::Jump();
-
 	}
 }
 
