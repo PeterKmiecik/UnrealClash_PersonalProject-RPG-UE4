@@ -680,8 +680,8 @@ void AMain::UpdateCombatTarget()
 		{
 			MainPlayerController->DisplayEnemyHealthBar();
 		}
-		SetCombatTarget(ClosestEnemy);
 		bHasCombatTarget = true;
+		SetCombatTarget(ClosestEnemy);
 	}
 
 		
@@ -708,6 +708,9 @@ void AMain::SaveGame()
 	// // then we cast it to get our UUCppSaveGame class and save it to variable
 	UUCppSaveGame* SaveGameInstance =  Cast<UUCppSaveGame>(UGameplayStatics::CreateSaveGameObject(UUCppSaveGame::StaticClass()));
 
+	if (!SaveGameInstance)	{return;}
+	if ( SaveGameInstance->CharacterStats.WeaponName == "") { return; }
+
 	SaveGameInstance->CharacterStats.Health = Health;
 	SaveGameInstance->CharacterStats.MaxHealth = MaxHealth;
 	SaveGameInstance->CharacterStats.Coins = Coins;
@@ -717,6 +720,10 @@ void AMain::SaveGame()
 
 	if (EquippedWeapon) {
 		SaveGameInstance->CharacterStats.WeaponName = EquippedWeapon->Name;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] no equipped weapon for save game ! "), *(this->GetName()));
 	}
 
 	// // Create save slot with name of player 
@@ -728,8 +735,11 @@ void AMain::LoadGame(bool SetPosition)
 	// // same as in SaveGame() we create instance of class UUCppSaveGame
 	UUCppSaveGame* LoadGameInstance = Cast<UUCppSaveGame>(UGameplayStatics::CreateSaveGameObject(UUCppSaveGame::StaticClass()));
 
+	if (LoadGameInstance->CharacterStats.WeaponName == "") { return; }
+	if (!LoadGameInstance) { return; }
+	if (UGameplayStatics::DoesSaveGameExist(LoadGameInstance->PlayerName,0 ) == false) {return;}
 	LoadGameInstance = Cast<UUCppSaveGame>( UGameplayStatics::LoadGameFromSlot(LoadGameInstance->PlayerName, LoadGameInstance->UserIndex));
-
+	
 	// // set Main character health variable with amount saved in UUCppSaveGame slot called PlayerName (which was defined in UUCppSaveGame constructor)
 	Health = LoadGameInstance->CharacterStats.Health;
 	MaxHealth = LoadGameInstance->CharacterStats.MaxHealth;
@@ -737,6 +747,14 @@ void AMain::LoadGame(bool SetPosition)
 	Stamina = LoadGameInstance->CharacterStats.Stamina;
 	Coins = LoadGameInstance->CharacterStats.Coins;
 
+	if (SetPosition)
+	{
+		SetActorLocation(LoadGameInstance->CharacterStats.Location);
+		SetActorRotation(LoadGameInstance->CharacterStats.Rotation);
+	}
+	SetMovementStatus(EMovementStatus::EMS_Normal);
+	GetMesh()->bPauseAnims = false;
+	GetMesh()->bNoSkeletonUpdate = false;
 
 	if (WeaponStorage)
 	{
@@ -744,8 +762,10 @@ void AMain::LoadGame(bool SetPosition)
 
 		if (Weapons) {
 			FString WeaponName = LoadGameInstance->CharacterStats.WeaponName;
-		
 
+			if (LoadGameInstance->CharacterStats.WeaponName == "NAME") {
+				UE_LOG(LogTemp, Error, TEXT("Main character BP: Weapon name is equalt to NAME ! "));
+				return; }
 			AWeapon* WeaponToEquip = GetWorld()->SpawnActor<AWeapon>(Weapons->WeaponMap[WeaponName]);
 			WeaponToEquip->Equip(this);
 		}
@@ -755,14 +775,7 @@ void AMain::LoadGame(bool SetPosition)
 		UE_LOG(LogTemp, Error, TEXT("Main character BP: Weapon Storage reference is not set !"));
 
 	}
+
 	
-	if (SetPosition)
-	{
-		SetActorLocation(LoadGameInstance->CharacterStats.Location);
-		SetActorRotation(LoadGameInstance->CharacterStats.Rotation);
-	}
-	SetMovementStatus(EMovementStatus::EMS_Normal);
-	GetMesh()->bPauseAnims = false;
-	GetMesh()->bNoSkeletonUpdate = false;
 }
 

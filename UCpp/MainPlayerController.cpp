@@ -34,6 +34,11 @@ void AMainPlayerController::BeginPlay()
 			EnemyHealthBar->AddToViewport();
 			EnemyHealthBar->SetVisibility(ESlateVisibility::Hidden);
 		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Enemy Healthbar was not created at begin play !"));
+
+		}
 		FVector2D Alignment = FVector2D(0.f, 0.f);
 		EnemyHealthBar->SetAlignmentInViewport(Alignment);
 	}
@@ -86,6 +91,11 @@ void AMainPlayerController::DisplayEnemyHealthBar()
 	{
 		bEnemyHealthBarVisible = true;
 		EnemyHealthBar->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+	//	UE_LOG(LogTemp, Error, TEXT("[%s] no EnemyHealthbar created. Called by DisplayEnemyHealthbar"), *(this->GetName());
+
 	}
 }
 
