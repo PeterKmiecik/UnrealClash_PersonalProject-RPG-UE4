@@ -17,7 +17,7 @@ ALevelTransitionVolume::ALevelTransitionVolume()
 	Billboard = CreateDefaultSubobject<UBillboardComponent>(TEXT("Billboard"));
 	Billboard->SetupAttachment(RootComponent);
 
-	TransitionLevelName = "MyLevel";
+	TransitionLevelName = "Forge";
 }
 
 // Called when the game starts or when spawned
