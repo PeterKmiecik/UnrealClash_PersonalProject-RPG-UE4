@@ -17,7 +17,7 @@ void UEnemyAnimInstance::NativeInitializeAnimation()
 		{
 			Enemy = Cast<AEnemy>(Pawn);
 
-		}
+		// }
 	}
 
 }

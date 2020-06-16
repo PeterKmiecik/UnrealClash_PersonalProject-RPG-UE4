@@ -34,7 +34,6 @@ class UCPP_API AMain : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AMain();
 
 	UPROPERTY(EditDefaultsOnly, Category = "@@@ Properties")
@@ -93,12 +92,11 @@ public:
 	/* // Sets player as actual enemy which is overlapping with enemy combat sphere */
 	FORCEINLINE void SetCombatTarget(AEnemy* Target) { CombatTarget = Target; }
 
-	/* // Take Main character Z rotation toward facing enemy (get what rotation we need to look toawrd target)*/
+	/* // Take Main character Z rotation toward facing enemy (get what rotation we need to look toaward target)*/
 	FRotator GetLookAtRotationYaw(FVector Target);
 
-	/* ---------------------------------------- ---------------------------------------- ---------------------------------------- */
+	/* movement / cameras ---------------------------------------- ---------------------------------------- ---------------------------------------- */
 
-	/* // Set movement Status and running speed */
 	void SetMovementStatus(EMovementStatus Status);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "@@@ Properties")
@@ -168,7 +166,6 @@ public:
 	/* // Check to see if taken damage will put us below 0 health, If so, call Die() */
 	void DecrementHealth(float Amount);
 
-	/* // override of UE4 function */
 	virtual float TakeDamage(float DamageAmount,struct FDamageEvent const& DamageEvent,class AController* EventInstigator,AActor* DamageCauser) override;
 
 	UFUNCTION(BlueprintCallable, Category = "@@@ Main character")
@@ -180,14 +177,11 @@ public:
 	void IncrementHealth(float Amount);
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	/* // Called for forwards/backwards input */

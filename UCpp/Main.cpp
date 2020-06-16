@@ -38,8 +38,6 @@ AMain::AMain()
 	// Create Follow Camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	// Attach camera to the end of the boom and let the boom adjust to match 
-	// the controller orientation
 	FollowCamera->bUsePawnControlRotation = false;
 
 	// Set up turn rate
@@ -86,7 +84,6 @@ AMain::AMain()
 	bHasCombatTarget = false;
 }
 
-// Called when the game starts or when spawned
 void AMain::BeginPlay()
 {
 	Super::BeginPlay();
@@ -98,7 +95,6 @@ void AMain::BeginPlay()
 	}
 }
 
-// Called every frame
 void AMain::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -239,7 +235,7 @@ void AMain::Tick(float DeltaTime)
 		// if stamina is over minimum stamina value
 		if (Stamina + DeltaStamina >= MinSprintStamina)
 		{
-			// to jest powy¿ej minimum i zmienia status z poni¿ej minimum
+			// then stamina is above minimum and changes status from below minimum
 			SetStaminaStatus(EStaminaStatus::ESS_Normal);
 		}
 		// when exhausted we are recovering
@@ -279,7 +275,6 @@ void AMain::Tick(float DeltaTime)
 	}
 }
  
-// Called to bind functionality to input
 void AMain::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -384,10 +379,8 @@ void AMain::LMBDown()
 	bLMBDown = true;
 
 	// // if we are dead and lmb is pressed, do not execute rest of this function (we are not going to be able to pickup weapons etc.)
-	// // return; will exit function and nothing past it will be executed
 	if (MovementStatus == EMovementStatus::EMS_Dead) { return; }
 
-	// WEAPON EQUIPPING -----------------------------------------------------------------
 	// if overlapped with weapon and if weapon cast succeed, equip overlapped weapon
 	if (ActiveOverlappingItem)
 	{
@@ -414,7 +407,6 @@ void AMain::ESCDown()
 {
 	bESCDown = true;
 	
-	// when escape is pushed, show PauseMenu
 	if (MainPlayerController)
 	{
 		MainPlayerController->TogglePauseMenu();
@@ -430,7 +422,6 @@ void AMain::ESCUp()
 
 void AMain::SetEquippedWeapon(AWeapon* WeaponToSet)
 {
-	// prevents from crashing if no equipped weapon is found on character
 	if (EquippedWeapon)
 	{
 		EquippedWeapon->Destroy();
@@ -490,8 +481,6 @@ void AMain::AttackEnd()
 	}
 }
 
-// // Check to see if taken damage will put us below 0 health,
-// // If so, call Die() 
 void AMain::DecrementHealth(float Amount)
 {
 	IncrementCoins(-2);
@@ -633,7 +622,6 @@ void  AMain::SetInterpToEnemy(bool Interp)
 FRotator AMain::GetLookAtRotationYaw(FVector Target)
 {
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Target);
-	// construct rotator 
 	FRotator LookAtRotationYaw(0.f, LookAtRotation.Yaw, 0.f);
 	return LookAtRotationYaw;
 }
